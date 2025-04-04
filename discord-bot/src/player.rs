@@ -1,5 +1,5 @@
-use rustble::Player;
-use serenity::all::{CacheHttp, Channel, ChannelId, CreateMessage, Member, MessageBuilder, UserId};
+use rustble::traits::Player;
+use serenity::all::{ChannelId, CreateMessage, MessageBuilder, UserId};
 use serenity::prelude::Context;
 
 #[derive(Debug, Clone, PartialEq)]

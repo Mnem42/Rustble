@@ -303,6 +303,7 @@ dependencies = [
 name = "discord-bot"
 version = "0.1.0"
 dependencies = [
+ "rand 0.9.0",
  "rustble",
  "serenity",
  "tokio",

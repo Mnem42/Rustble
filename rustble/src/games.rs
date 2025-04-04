@@ -1,6 +1,7 @@
 pub mod rr{
     use std::sync::Arc;
-    use crate::{Player,Debug,Randomiser,Error};
+    use crate::traits::{Player,Randomiser};
+    use crate::{Debug,Error};
 
     #[derive(Debug)]
     pub struct RR<'a, P, R>
@@ -11,7 +12,7 @@ pub mod rr{
     }
 
     impl<'a, P, R> RR<'a, P, R>
-        where P: Player + Clone + Debug, R:Randomiser + Debug
+        where P: Player + Clone, R:Randomiser
     {
         pub fn new() -> Self{
             RR {

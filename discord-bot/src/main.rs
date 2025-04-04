@@ -1,12 +1,13 @@
-use std::panic::resume_unwind;
-use std::rc::Rc;
-
 use player::DiscordPlayer;
+use rand::rngs::ThreadRng;
 use rustble::games::rr::RR;
+use rustble::randomisers::SimpleRandom;
+use rustble::SampleRandom;
 use serenity::all::{ApplicationId, Ready};
 use serenity::async_trait;
 use serenity::model::channel::Message;
 use serenity::prelude::*;
+use rand;
 
 mod player;
 
@@ -14,7 +15,7 @@ struct Handler;
 
 #[async_trait]
 impl EventHandler for Handler {
-    async fn ready(&self, ctx: Context, ready: Ready) {
+    async fn ready(&self, _ctx: Context, ready: Ready) {
         println!("{} is connected!", ready.user.name);
     }
 
@@ -25,7 +26,7 @@ impl EventHandler for Handler {
             }
         }
         if msg.content == "!play-single" {
-            let mut game: RR<player::DiscordPlayer, rustble::SampleRandom> = RR::new();
+            let mut game: RR<player::DiscordPlayer, SimpleRandom> = RR::new();
             
             let mut player = DiscordPlayer::new(msg.author.id);
             game.add_player(&mut player);
