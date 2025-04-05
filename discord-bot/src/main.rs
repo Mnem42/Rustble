@@ -28,8 +28,8 @@ impl EventHandler for Handler {
         if msg.content == "!play-single" {
             let mut game: RR<player::DiscordPlayer, SimpleRandom> = RR::new();
             
-            let mut player = DiscordPlayer::new(msg.author.id);
-            game.add_player(&mut player);
+            let player = DiscordPlayer::new(msg.author.id);
+            game.add_player(player);
             let _ = game.play();
 
             let _ = game.get_players()[0].send_dminfo(ctx,msg.channel_id).await;

@@ -21,11 +21,11 @@ pub mod rr{
             }
         }
 
-        pub fn get_players(&self) -> &Vec<&mut P>{
+        pub fn get_players(&self) -> &Vec<P>{
             &self.players
         }
 
-        pub fn add_player(&mut self, player: &'a mut P) -> &mut Self{
+        pub fn add_player(&mut self, player: P) -> &mut Self{
             self.players.push(player);
             self
         }
@@ -37,7 +37,7 @@ pub mod rr{
                     return Ok(self.players[0].lose());
                 }
                 else{
-                    return Ok(self.players[0]);
+                    return Ok(&self.players[0]);
                 }
             }
 
