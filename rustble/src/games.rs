@@ -4,14 +4,14 @@ pub mod rr{
     use crate::{Debug,Error};
 
     #[derive(Debug)]
-    pub struct RR<'a, P, R>
+    pub struct RR<P, R>
         where P: Player + Clone, R: Randomiser
     {
-        players: Vec<&'a mut P>,
+        players: Vec<P>,
         randomiser: R
     }
 
-    impl<'a, P, R> RR<'a, P, R>
+    impl<P, R> RR<P, R>
         where P: Player + Clone, R:Randomiser
     {
         pub fn new() -> Self{
