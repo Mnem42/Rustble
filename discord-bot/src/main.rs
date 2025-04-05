@@ -1,13 +1,10 @@
 use player::DiscordPlayer;
-use rand::rngs::ThreadRng;
 use rustble::games::rr::RR;
 use rustble::randomisers::SimpleRandom;
-use rustble::SampleRandom;
 use serenity::all::{ApplicationId, Ready};
 use serenity::async_trait;
 use serenity::model::channel::Message;
 use serenity::prelude::*;
-use rand;
 
 mod player;
 
