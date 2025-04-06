@@ -23,7 +23,7 @@ impl DiscordPlayer{
                 true =>  " You lost",
                 false => " You won"
             });
-            builder.push("Your current balance is:");
+            builder.push(format!("Your bet was {}. Your current balance is:",self.balance));
             builder.push_bold(format!("{}",self.balance));
             let builder = CreateMessage::new().content(builder.to_string());
             let _ = channel.send_message(&ctx, builder).await;
