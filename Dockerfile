@@ -17,7 +17,7 @@ ARG APP_NAME
 WORKDIR /app
 
 # Install host build dependencies.
-RUN apk add --no-cache clang lld musl-dev git
+RUN apk add --no-cache clang lld musl-dev git libressl
 
 # Build the application.
 # Leverage a cache mount to /usr/local/cargo/registry/
@@ -27,7 +27,6 @@ RUN apk add --no-cache clang lld musl-dev git
 # Leverage a bind mount to the src directory to avoid having to copy the
 # source code into the container. Once built, copy the executable to an
 # output directory before the cache mounted /app/target is unmounted.
-RUN apk add libressl-dev
 
 RUN --mount=type=bind,source=discord-bot,target=discord-bot \
     --mount=type=bind,source=rustble,target=rustble \
@@ -37,7 +36,7 @@ RUN --mount=type=bind,source=discord-bot,target=discord-bot \
     --mount=type=cache,target=/usr/local/cargo/git/db \
     --mount=type=cache,target=/usr/local/cargo/registry/ \
 cargo build --locked --release --workspace && \
-cp ./target/release/$APP_NAME/discord-bot /bin/server
+cp ./discord-bot/target/release/$APP_NAME /bin/server
 
 ################################################################################
 # Create a new stage for running the application that contains the minimal
@@ -67,8 +66,8 @@ USER appuser
 # Copy the executable from the "build" stage.
 COPY --from=build /bin/server /bin/
 
-# Expose the port that the application listens on.
-EXPOSE 8080
+# Expose the port that the application listens on. (none for now)
+# EXPOSE 8080
 
 # What the container should run when it is started.
 CMD ["/bin/server"]

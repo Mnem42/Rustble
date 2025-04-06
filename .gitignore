@@ -3,4 +3,4 @@ run.sh
 deploy.sh
 
 # hide emacs files
-*~
+target/*

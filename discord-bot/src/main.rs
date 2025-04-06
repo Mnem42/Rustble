@@ -40,7 +40,8 @@ impl EventHandler for Handler {
         if msg.content.starts_with("!about"){
             let mut builder = MessageBuilder::new();
             builder.push_line("# Commands");
-            builder.push_line("!play-single : Plays a single player game of russian roulette");
+            builder.push_line("`!play-single` : Plays a single player game of russian roulette");
+            builder.push_line("`!about      ` : Shows this help");
             let _ = msg.channel_id.send_message(&ctx, CreateMessage::new().content(builder.to_string())).await;
         }
     }
