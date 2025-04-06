@@ -16,9 +16,12 @@ FROM rust:${RUST_VERSION}-alpine AS build
 ARG APP_NAME
 WORKDIR /app
 
+COPY . .
+
 # Install host build dependencies.
 RUN apk add --no-cache clang lld musl-dev git
 
+ls -l
 # Build the application.
 # Leverage a cache mount to /usr/local/cargo/registry/
 # for downloaded dependencies, a cache mount to /usr/local/cargo/git/db
@@ -33,7 +36,7 @@ RUN --mount=type=bind,source=src,target=src \
     --mount=type=cache,target=/app/target/ \
     --mount=type=cache,target=/usr/local/cargo/git/db \
     --mount=type=cache,target=/usr/local/cargo/registry/ \
-cargo build --locked --release && \
+cargo build --release && \
 cp ./target/release/$APP_NAME /bin/server
 
 ################################################################################
