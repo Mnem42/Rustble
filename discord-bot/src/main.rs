@@ -1,7 +1,7 @@
 use player::DiscordPlayer;
 use rustble::games::rr::RR;
 use rustble::randomisers::SimpleRandom;
-use serenity::all::{ApplicationId, CreateCommand, CreateInteractionResponse, CreateInteractionResponseMessage, Ready};
+use serenity::all::{ApplicationId, CreateCommand, CreateInteractionResponse, CreateInteractionResponseMessage, Interaction, Ready, ResolvedOption};
 use serenity::async_trait;
 use serenity::model::channel::Message;
 use serenity::prelude::*;
@@ -10,6 +10,9 @@ mod player;
 
 struct Handler;
 
+pub fn run(_options: &[ResolvedOption]) -> String {
+    "Hey, I'm alive!".to_string()
+}
 pub fn register() -> CreateCommand {
     CreateCommand::new("ping").description("A ping command")
 }
@@ -34,6 +37,25 @@ impl EventHandler for Handler {
             let _ = game.play();
 
             let _ = game.get_players()[0].send_dminfo(ctx,msg.channel_id).await;
+        }
+    }
+
+    async fn interaction_create(&self, ctx: Context, interaction: Interaction) {
+        if let Interaction::Command(command) = interaction {
+            println!("Received command interaction: {command:#?}");
+
+            let content = match command.data.name.as_str() {
+                "ping" => Some(run(&command.data.options())),
+                _ => Some("not implemented :(".to_string()),
+            };
+
+            if let Some(content) = content {
+                let data = CreateInteractionResponseMessage::new().content(content);
+                let builder = CreateInteractionResponse::Message(data);
+                if let Err(why) = command.create_response(&ctx.http, builder).await {
+                    println!("Cannot respond to slash command: {why}");
+                }
+            }
         }
     }
 }
