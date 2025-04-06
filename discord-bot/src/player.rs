@@ -23,6 +23,8 @@ impl DiscordPlayer{
                 true =>  " You lost",
                 false => " You won"
             });
+            builder.push_line("Your current balance is:");
+            builder.push_bold(format!("{}",self.balance));
             let builder = CreateMessage::new().content(builder.to_string());
             let _ = channel.send_message(&ctx, builder).await;
         }
@@ -37,6 +39,7 @@ impl Player for DiscordPlayer{
     }
 
     fn win(&mut self, bet: i64) -> &mut Self {
+        self.balance += bet;
         self
     }
 
@@ -47,16 +50,19 @@ impl Player for DiscordPlayer{
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Casino{
-    lost: bool
+    lost: bool,
+    balance: i64
 }
 
 impl Player for Casino{
     fn lose(&mut self, bet: i64) -> &mut Self {
         self.lost = true;
+        self.balance -= bet;
         self
     }
 
     fn win(&mut self, bet: i64) -> &mut Self {
+        self.balance += bet;
         self
     }
 
