@@ -36,7 +36,7 @@ pub mod rr{
                     return Ok(self.players[0].lose(bet));
                 }
                 else{
-                    return Ok(&self.players[0]);
+                    return Ok(self.players[0].win(bet));
                 }
             }
 

@@ -1,3 +1,5 @@
+use core::time;
+
 use player::DiscordPlayer;
 use rustble::games::rr::RR;
 use rustble::randomisers::SimpleRandom;
@@ -23,8 +25,6 @@ impl EventHandler for Handler {
             }
         }
         if msg.content.starts_with("!play-single") {
-            println!("{:?}", msg.content.split_whitespace().collect::<Vec<_>>());
-
             let bet = match msg.content.split_whitespace().skip(1).next(){
                 Some(x) => x.parse().unwrap_or(0),
                 None => 0

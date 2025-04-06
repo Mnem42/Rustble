@@ -34,7 +34,7 @@ impl DiscordPlayer{
 impl Player for DiscordPlayer{
     fn lose(&mut self, bet: i64) -> &mut Self {
         self.lost = true;
-        self.balance-=bet;
+        self.balance -= bet;
         self
     }
 
