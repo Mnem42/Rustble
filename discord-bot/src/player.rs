@@ -14,7 +14,7 @@ impl DiscordPlayer{
         DiscordPlayer{player: Some(user), lost: false, balance: 0}
     }
 
-    pub async fn send_info(&self, ctx: Context, channel: ChannelId){
+    pub async fn send_info(&self, ctx: &Context, channel: ChannelId){
         if let Some(player) = &self.player{
             let mut builder = MessageBuilder::new();
             builder.user(player);

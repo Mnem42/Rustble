@@ -1,7 +1,7 @@
 use player::DiscordPlayer;
 use rustble::games::rr::RR;
 use rustble::randomisers::SimpleRandom;
-use serenity::all::{ApplicationId, Ready};
+use serenity::all::{ApplicationId, CreateMessage, MessageBuilder, Ready};
 use serenity::async_trait;
 use serenity::model::channel::Message;
 use serenity::prelude::*;
@@ -34,7 +34,14 @@ impl EventHandler for Handler {
             game.add_player(player);
             let _ = game.play(bet);
 
-            let _ = game.get_players()[0].send_info(ctx,msg.channel_id).await;
+            let _ = game.get_players()[0].send_info(&ctx,msg.channel_id).await;
+        }
+
+        if msg.content.starts_with("!about"){
+            let mut builder = MessageBuilder::new();
+            builder.push_line("# Commands");
+            builder.push_line("!play-single : Plays a single player game of russian roulette");
+            let _ = msg.channel_id.send_message(&ctx, CreateMessage::new().content(builder.to_string())).await;
         }
     }
 }
