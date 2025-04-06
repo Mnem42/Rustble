@@ -23,7 +23,7 @@ impl EventHandler for Handler {
             }
         }
         if msg.content.starts_with("!play-single") {
-            let bet = match msg.content.split_whitespace().next(){
+            let bet = match msg.content.split_whitespace().skip(1).next(){
                 Some(x) => x.parse().unwrap_or(0),
                 None => 0
             };
