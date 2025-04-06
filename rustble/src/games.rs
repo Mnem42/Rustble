@@ -32,7 +32,7 @@ pub mod rr{
         pub fn play(&mut self, bet: i64) -> Result<&P,Error>{
             if self.players.len() == 1 {
                 let barrel = self.randomiser.random_range(0, 20);
-                if barrel%6 == 0 {
+                if barrel%2 == 0 {
                     return Ok(self.players[0].lose(bet));
                 }
                 else{
