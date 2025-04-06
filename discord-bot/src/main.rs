@@ -1,7 +1,7 @@
 use player::DiscordPlayer;
 use rustble::games::rr::RR;
 use rustble::randomisers::SimpleRandom;
-use serenity::all::{ApplicationId, CreateCommand, CreateInteractionResponse, CreateInteractionResponseMessage, Interaction, Ready, ResolvedOption};
+use serenity::all::{ApplicationId, Ready};
 use serenity::async_trait;
 use serenity::model::channel::Message;
 use serenity::prelude::*;
@@ -9,13 +9,6 @@ use serenity::prelude::*;
 mod player;
 
 struct Handler;
-
-pub fn run(_options: &[ResolvedOption]) -> String {
-    "Hey, I'm alive!".to_string()
-}
-pub fn register() -> CreateCommand {
-    CreateCommand::new("ping").description("A ping command")
-}
 
 #[async_trait]
 impl EventHandler for Handler {
@@ -29,33 +22,19 @@ impl EventHandler for Handler {
                 println!("Error sending message: {why:?}");
             }
         }
-        if msg.content == "!play-single" {
+        if msg.content.starts_with("!play-single") {
+            let bet = match msg.content.split_whitespace().next(){
+                Some(x) => x.parse().unwrap_or(0),
+                None => 0
+            };
+
             let mut game: RR<player::DiscordPlayer, SimpleRandom> = RR::new();
             
             let player = DiscordPlayer::new(msg.author.id);
             game.add_player(player);
-            let _ = game.play();
+            let _ = game.play(bet);
 
             let _ = game.get_players()[0].send_dminfo(ctx,msg.channel_id).await;
-        }
-    }
-
-    async fn interaction_create(&self, ctx: Context, interaction: Interaction) {
-        if let Interaction::Command(command) = interaction {
-            println!("Received command interaction: {command:#?}");
-
-            let content = match command.data.name.as_str() {
-                "ping" => Some(run(&command.data.options())),
-                _ => Some("not implemented :(".to_string()),
-            };
-
-            if let Some(content) = content {
-                let data = CreateInteractionResponseMessage::new().content(content);
-                let builder = CreateInteractionResponse::Message(data);
-                if let Err(why) = command.create_response(&ctx.http, builder).await {
-                    println!("Cannot respond to slash command: {why}");
-                }
-            }
         }
     }
 }

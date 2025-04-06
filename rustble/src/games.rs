@@ -29,11 +29,11 @@ pub mod rr{
             self
         }
 
-        pub fn play(&mut self) -> Result<&P,Error>{
+        pub fn play(&mut self, bet: i64) -> Result<&P,Error>{
             if self.players.len() == 1 {
                 let barrel = self.randomiser.random_range(0, 20);
                 if barrel%6 == 0 {
-                    return Ok(self.players[0].lose());
+                    return Ok(self.players[0].lose(bet));
                 }
                 else{
                     return Ok(&self.players[0]);
@@ -44,10 +44,10 @@ pub mod rr{
                 let barrel = self.randomiser.random_range(0, 6);
 
                 if barrel == 0 {
-                    self.players.pop().unwrap().lose();
+                    self.players.pop().unwrap().lose(bet);
                 }
             };
-            Ok(self.players[0].win())
+            Ok(self.players[0].win(bet))
             
         }
     }

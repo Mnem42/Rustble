@@ -5,13 +5,14 @@ use serenity::prelude::Context;
 #[derive(Debug, Clone, PartialEq)]
 pub struct DiscordPlayer{
     player: Option<UserId>,
-    lost: bool
+    lost: bool,
+    balance: i64
 }
 
 
 impl DiscordPlayer{
     pub fn new(user: UserId) -> Self{
-        DiscordPlayer{player: Some(user), lost: false}
+        DiscordPlayer{player: Some(user), lost: false, balance: 0}
     }
 
     pub async fn send_dminfo(&self, ctx: Context, channel: ChannelId){
@@ -29,16 +30,13 @@ impl DiscordPlayer{
 }
 
 impl Player for DiscordPlayer{
-    fn new() -> Self{
-        DiscordPlayer { player: None, lost:false }
-    }
-
-    fn lose(&mut self) -> &mut Self {
+    fn lose(&mut self, bet: i64) -> &mut Self {
         self.lost = true;
+        self.balance-=bet;
         self
     }
 
-    fn win(&mut self) -> &mut Self {
+    fn win(&mut self, bet: i64) -> &mut Self {
         self
     }
 
@@ -53,16 +51,12 @@ pub struct Casino{
 }
 
 impl Player for Casino{
-    fn new() -> Self{
-        Casino { lost:false }
-    }
-
-    fn lose(&mut self) -> &mut Self {
+    fn lose(&mut self, bet: i64) -> &mut Self {
         self.lost = true;
         self
     }
 
-    fn win(&mut self) -> &mut Self {
+    fn win(&mut self, bet: i64) -> &mut Self {
         self
     }
 
