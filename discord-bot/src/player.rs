@@ -2,13 +2,12 @@ use rustble::traits::Player;
 use serenity::all::{ChannelId, CreateMessage, MessageBuilder, UserId};
 use serenity::prelude::Context;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, sqlx::FromRow)]
 pub struct DiscordPlayer{
     player: Option<UserId>,
     lost: bool,
     balance: i64
 }
-
 
 impl DiscordPlayer{
     pub fn new(user: UserId) -> Self{
