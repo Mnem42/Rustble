@@ -46,3 +46,27 @@ impl Player for DiscordPlayer{
         self.lost
     }
 }
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Casino{
+    lost: bool
+}
+
+impl Player for Casino{
+    fn new() -> Self{
+        Casino { lost:false }
+    }
+
+    fn lose(&mut self) -> &mut Self {
+        self.lost = true;
+        self
+    }
+
+    fn win(&mut self) -> &mut Self {
+        self
+    }
+
+    fn has_lost(self) -> bool {
+        self.lost
+    }
+}

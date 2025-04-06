@@ -1,7 +1,7 @@
 use player::DiscordPlayer;
 use rustble::games::rr::RR;
 use rustble::randomisers::SimpleRandom;
-use serenity::all::{ApplicationId, Ready};
+use serenity::all::{ApplicationId, CreateCommand, CreateInteractionResponse, CreateInteractionResponseMessage, Ready};
 use serenity::async_trait;
 use serenity::model::channel::Message;
 use serenity::prelude::*;
@@ -9,6 +9,10 @@ use serenity::prelude::*;
 mod player;
 
 struct Handler;
+
+pub fn register() -> CreateCommand {
+    CreateCommand::new("ping").description("A ping command")
+}
 
 #[async_trait]
 impl EventHandler for Handler {
