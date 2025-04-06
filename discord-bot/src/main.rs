@@ -34,7 +34,7 @@ impl EventHandler for Handler {
             game.add_player(player);
             let _ = game.play(bet);
 
-            let _ = game.get_players()[0].send_dminfo(ctx,msg.channel_id).await;
+            let _ = game.get_players()[0].send_info(ctx,msg.channel_id).await;
         }
     }
 }

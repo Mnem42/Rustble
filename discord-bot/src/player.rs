@@ -15,15 +15,15 @@ impl DiscordPlayer{
         DiscordPlayer{player: Some(user), lost: false, balance: 0}
     }
 
-    pub async fn send_dminfo(&self, ctx: Context, channel: ChannelId){
+    pub async fn send_info(&self, ctx: Context, channel: ChannelId){
         if let Some(player) = &self.player{
             let mut builder = MessageBuilder::new();
             builder.user(player);
-            builder.push(match self.lost{
+            builder.push_line(match self.lost{
                 true =>  " You lost",
                 false => " You won"
             });
-            builder.push_line("Your current balance is:");
+            builder.push("Your current balance is:");
             builder.push_bold(format!("{}",self.balance));
             let builder = CreateMessage::new().content(builder.to_string());
             let _ = channel.send_message(&ctx, builder).await;
