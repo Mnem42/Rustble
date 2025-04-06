@@ -1,0 +1,3 @@
+# hide deployment files
+run.sh
+deploy.sh
