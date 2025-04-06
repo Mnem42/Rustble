@@ -1,3 +1,6 @@
 # hide deployment files
 run.sh
 deploy.sh
+
+# hide emacs files
+*~
