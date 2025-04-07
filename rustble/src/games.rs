@@ -24,19 +24,19 @@ pub mod rr{
             &self.players
         }
 
-        pub fn add_player(&mut self, player: P) -> &mut Self{
+        pub fn add_player(&mut self, player: P) -> &P{
             self.players.push(player);
-            self
+            self.players.last().unwrap()
         }
 
         pub fn play(&mut self, bet: i64) -> Result<&P,Error>{
             if self.players.len() == 1 {
                 let barrel = self.randomiser.random_range(0, 20);
                 if barrel%2 == 0 {
-                    return Ok(self.players[0].lose(bet));
+                    return Ok({self.players[0].lose(bet);&self.players[0]});
                 }
                 else{
-                    return Ok(self.players[0].win(bet));
+                    return Ok({self.players[0].win(bet);&self.players[0]});
                 }
             }
 
@@ -47,7 +47,7 @@ pub mod rr{
                     self.players.pop().unwrap().lose(bet);
                 }
             };
-            Ok(self.players[0].win(bet))
+            Ok({self.players[0].win(bet);&self.players[0]})
             
         }
     }
