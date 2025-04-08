@@ -29,14 +29,13 @@ impl Handler{
         tmp.iter().position(|x| x.get_id() == id.get())
     }
 
-    pub fn get_discord_player(&self, id: UserId) -> Option<DiscordPlayer>{
+    pub async fn get_discord_player(&self, id: UserId) -> Option<DiscordPlayer>{
         let player = &self.players.try_lock().unwrap()[self.get_player_index(id)?];
         Some(DiscordPlayer::new(id,player.get_balance()))
     }
 
-    pub fn set_player_balance(&self, id: u64, bal:i64 ) -> Option<()>{
-        self.get_discord_player(UserId::new(id))?.set_balance(bal);
-        Some(())
+    pub async fn set_player_balance(&self, id: u64, bal:i64 ){
+        self.get_discord_player(UserId::new(id)).await.unwrap().set_balance(bal);
     }
 }
 
@@ -63,11 +62,12 @@ impl EventHandler for Handler {
             };
 
             let mut game: RR<player::DiscordPlayer, SimpleRandom> = RR::new();
-            game.add_player(self.get_discord_player(msg.author.id).unwrap());
+            game.add_player(self.get_discord_player(msg.author.id).await.unwrap());
             let winner = game.play(bet).unwrap();
 
+            self.set_player_balance(winner.get_id(), winner.get_balance()).await;
+            panic!("Good.");
             let _ = winner.send_info(&ctx,msg.channel_id).await;
-            self.set_player_balance(winner.get_id(), winner.get_balance());
         }
         else if msg.content.starts_with("!about"){
             let mut builder = MessageBuilder::new();
