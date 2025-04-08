@@ -2,9 +2,9 @@ use player::{Casino, DiscordPlayer};
 use rustble::games::rr::RR;
 use rustble::randomisers::SimpleRandom;
 use rustble::traits::*;
-use serenity::all::{ApplicationId, CreateMessage, Message, MessageBuilder, Ready, UserId};
+use serenity::all::{ApplicationId, CreateMessage, Message, MessageBuilder, Ready, User, UserId};
 use serenity::async_trait;
-use serenity::model::timestamp;
+use serenity::model::{timestamp, user};
 use serenity::prelude::*;
 use std::sync::{Arc, Mutex, TryLockError};
 
@@ -39,6 +39,12 @@ impl Handler{
             Ok(None)
         }
     }
+
+    pub fn set_player_balance(&self, id: u64, bal:i64 ) -> Option<DiscordPlayer>{
+        let mut player = self.get_discord_player(UserId::new(id)).unwrap()?;
+        player.set_balance(bal);
+        Some(player)
+    }
 }
 
 
@@ -68,6 +74,7 @@ impl EventHandler for Handler {
             let _ = game.play(bet);
 
             let _ = game.get_players()[0].send_info(&ctx,msg.channel_id).await;
+            self.set_player_balance(game.get_players()[0].get_id(), game.get_players()[0].get_balance());
         }
         else if msg.content.starts_with("!about"){
             let mut builder = MessageBuilder::new();

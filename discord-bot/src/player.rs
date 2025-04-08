@@ -45,6 +45,10 @@ impl Player for DiscordPlayer{
     fn get_balance(&self) -> i64 {
         self.balance
     }
+
+    fn set_balance(&mut self, bal: i64) {
+        self.balance = bal;
+    }
 }
 
 impl IdPlayer for DiscordPlayer{
@@ -76,6 +80,10 @@ impl Player for Casino{
 
     fn get_balance(&self) -> i64 {
         self.balance
+    }
+
+    fn set_balance(&mut self, bal: i64) {
+        self.balance = bal;
     }
 }
 

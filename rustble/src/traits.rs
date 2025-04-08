@@ -2,6 +2,7 @@ pub trait Player : Send{
     fn lose(&mut self, bet: i64);
     fn win(&mut self, bet: i64);
     fn has_lost(&self) -> bool;
+    fn set_balance(&mut self, bal: i64);
     fn get_balance(&self) -> i64;
 }
 
