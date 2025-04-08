@@ -29,21 +29,19 @@ impl Handler{
         Ok(())
     }
 
-    pub fn get_discord_player(&self, id: UserId) -> Result<Option<DiscordPlayer>,TryLockError<std::sync::MutexGuard<'_, Vec<Box<dyn IdPlayer>>>>>{
-        let tmp = self.players.lock()?;
-        let tmp = tmp.iter().find(|x| x.get_id() == id.get());
-        if let Some(x) = tmp{
-            Ok(Some(DiscordPlayer::new(UserId::new(x.get_id()),x.get_balance())))
-        }
-        else{
-            Ok(None)
-        }
+    fn get_player_index(&self, id:UserId) -> Option<usize>{
+        let tmp = self.players.lock().unwrap();
+        tmp.iter().position(|x| x.get_id() == id.get())
     }
 
-    pub fn set_player_balance(&self, id: u64, bal:i64 ) -> Option<DiscordPlayer>{
-        let mut player = self.get_discord_player(UserId::new(id)).unwrap()?;
-        player.set_balance(bal);
-        Some(player)
+    pub fn get_discord_player(&self, id: UserId) -> Option<DiscordPlayer>{
+        let player = &self.players.try_lock().unwrap()[self.get_player_index(id)?];
+        Some(DiscordPlayer::new(id,player.get_balance()))
+    }
+
+    pub fn set_player_balance(&self, id: u64, bal:i64 ) -> Option<()>{
+        self.get_discord_player(UserId::new(id))?.set_balance(bal);
+        Some(())
     }
 }
 
@@ -70,7 +68,7 @@ impl EventHandler for Handler {
             };
 
             let mut game: RR<player::DiscordPlayer, SimpleRandom> = RR::new();
-            game.add_player(self.get_discord_player(msg.author.id).unwrap().unwrap());
+            game.add_player(self.get_discord_player(msg.author.id).unwrap());
             let winner = game.play(bet).unwrap();
 
             let _ = winner.send_info(&ctx,msg.channel_id).await;
