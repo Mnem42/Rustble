@@ -1,8 +1,8 @@
 pub trait Player{
-    fn lose(&mut self, bet: i64);
-    fn win(&mut self, bet: i64);
+    //fn new() -> Self;
+    fn lose(&mut self, bet: i64) -> &mut Self;
+    fn win(&mut self, bet: i64) -> &mut Self;
     fn has_lost(self) -> bool;
-    fn get_balance(&self) -> i64;
 }
 
 pub trait Randomiser{
