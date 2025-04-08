@@ -55,18 +55,21 @@ impl EventHandler for Handler {
                 None => 0
             };
 
-            let mut game: RR<player::DiscordPlayer, SimpleRandom> = RR::new();
-            game.add_player(self.get_discord_player(msg.author.id).await.unwrap());
-            let winner = game.play(bet).unwrap();
-
             println!(" A");
 
-            self.set_player_balance(winner.get_id(), winner.get_balance()).await;
+            let player = self.get_discord_player(msg.author.id).await.unwrap();
+            let mut game: RR<player::DiscordPlayer, SimpleRandom> = RR::new();
+            game.add_player(player);
+            let winner = game.play(bet).unwrap();
 
             println!(" B");
-            let _ = winner.send_info(&ctx,msg.channel_id).await;
+
+            self.set_player_balance(player.get_id(), player.get_balance()).await;
 
             println!(" C");
+            let _ = player.send_info(&ctx,msg.channel_id).await;
+
+            println!(" D");
             return;
         }
         if msg.content == "!ping" {
