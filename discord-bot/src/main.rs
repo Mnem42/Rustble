@@ -54,10 +54,10 @@ impl EventHandler for Handler {
                 println!("Error sending message: {why:?}");
             }
         }
-        else if msg.content.starts_with("!enroll"){
+        if msg.content.starts_with("!enroll"){
             self.add_player(DiscordPlayer::new(msg.author.id,100));
         }
-        else if msg.content.starts_with("!play-single") {
+        if msg.content.starts_with("!play-single") {
             let bet = match msg.content.split_whitespace().skip(1).next(){
                 Some(x) => x.parse().unwrap_or(0),
                 None => 0
@@ -70,7 +70,7 @@ impl EventHandler for Handler {
             self.set_player_balance(winner.get_id(), winner.get_balance()).await;
             let _ = winner.send_info(&ctx,msg.channel_id).await;
         }
-        else if msg.content.starts_with("!about"){
+        if msg.content.starts_with("!about"){
             let mut builder = MessageBuilder::new();
             builder.push_line("# Commands");
             builder.push_line("`!play-single` : Plays a single player game of russian roulette");
