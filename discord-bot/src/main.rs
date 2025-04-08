@@ -12,7 +12,7 @@ mod player;
 
 
 struct Handler{
-    players: Arc<Mutex<Vec<Box<dyn IdPlayer>>>>
+    players: Arc<Mutex<Vec<DiscordPlayer>>>
 }
 
 impl Handler{
@@ -20,13 +20,8 @@ impl Handler{
         Handler { players: Arc::new(Mutex::new(vec![])) }
     }
 
-    pub fn add_player(&self, x:DiscordPlayer) -> Result<(), TryLockError<std::sync::MutexGuard<'_, Vec<Box<dyn IdPlayer>>>>>{
-        self.players.try_lock()?.push(Box::new(x));
-        Ok(())
-    }
-    pub fn add_casino_player(&self, x:Casino) -> Result<(), TryLockError<std::sync::MutexGuard<'_, Vec<Box<dyn IdPlayer>>>>>{
-        self.players.try_lock()?.push(Box::new(x));
-        Ok(())
+    pub fn add_player(&self, x:DiscordPlayer){
+        self.players.try_lock().unwrap().push(x);
     }
 
     fn get_player_index(&self, id:UserId) -> Option<usize>{
@@ -59,7 +54,7 @@ impl EventHandler for Handler {
             }
         }
         else if msg.content.starts_with("!enroll"){
-            self.add_player(DiscordPlayer::new(msg.author.id,100)).unwrap();
+            self.add_player(DiscordPlayer::new(msg.author.id,100));
         }
         else if msg.content.starts_with("!play-single") {
             let bet = match msg.content.split_whitespace().skip(1).next(){
