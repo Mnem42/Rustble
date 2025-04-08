@@ -55,7 +55,7 @@ impl EventHandler for Handler {
             }
             return;
         }
-        if msg.content.starts_with("!enroll"){
+        if msg.content == "!enroll"{
             self.add_player(DiscordPlayer::new(msg.author.id,100));
             return;
         }
@@ -73,7 +73,7 @@ impl EventHandler for Handler {
             let _ = winner.send_info(&ctx,msg.channel_id).await;
             return;
         }
-        if msg.content.starts_with("!about"){
+        if msg.content == "!about"{
             let mut builder = MessageBuilder::new();
             builder.push_line("# Commands");
             builder.push_line("`!play-single` : Plays a single player game of russian roulette");
