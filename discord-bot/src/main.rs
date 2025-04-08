@@ -21,6 +21,7 @@ impl Handler{
     }
 
     pub fn add_player(&self, x:DiscordPlayer){
+        println!("{:?}",x);
         self.players.try_lock().unwrap().push(x);
     }
 
@@ -56,7 +57,6 @@ impl EventHandler for Handler {
             };
 
             println!(" A");
-
             let game_player = self.get_discord_player(msg.author.id).await.unwrap();
             println!("P");
             let mut game: RR<DiscordPlayer , SimpleRandom> = RR::new();
