@@ -21,7 +21,7 @@ impl Handler{
     }
 
     pub fn add_player(&self, x:DiscordPlayer){
-        println!("{:?}",x);
+        println!("{:?} {:?}",x, self.players);
         self.players.try_lock().unwrap().push(x);
     }
 
