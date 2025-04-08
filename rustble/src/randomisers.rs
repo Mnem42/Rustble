@@ -2,6 +2,7 @@ use rand::Rng;
 
 use crate::traits::Randomiser;
 
+#[derive(Clone)]
 pub struct SimpleRandom;
 
 impl Randomiser for SimpleRandom{

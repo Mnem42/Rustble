@@ -57,17 +57,16 @@ impl EventHandler for Handler {
 
             println!(" A");
 
-            let player = self.get_discord_player(msg.author.id).await.unwrap();
-            let mut game: RR<player::DiscordPlayer, SimpleRandom> = RR::new();
-            game.add_player(player);
-            let winner = game.play(bet).unwrap();
+            let game_player = self.get_discord_player(msg.author.id).await.unwrap();
+            let mut game: RR<DiscordPlayer , SimpleRandom> = RR::new();
+            
+            game.set_players(&[game_player.clone()]);
+            game.play(bet).unwrap();
 
             println!(" B");
 
-            self.set_player_balance(player.get_id(), player.get_balance()).await;
-
-            println!(" C");
-            let _ = player.send_info(&ctx,msg.channel_id).await;
+            self.set_player_balance(game_player.get_id(), game_player.get_balance()).await;
+            let _ = game_player.send_info(&ctx,msg.channel_id).await;
 
             println!(" D");
             return;

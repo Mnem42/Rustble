@@ -2,9 +2,9 @@ pub mod rr{
     use crate::traits::{Player,Randomiser};
     use crate::{Debug,Error};
 
-    #[derive(Debug)]
+    #[derive(Debug, Clone)]
     pub struct RR<P, R>
-        where P: Player + Clone, R: Randomiser
+        where P: Player, R: Randomiser
     {
         players: Vec<P>,
         randomiser: R
@@ -24,9 +24,13 @@ pub mod rr{
             &self.players
         }
 
-        pub fn add_player(&mut self, player: P) -> &mut Self{
-            self.players.push(player);
-            self
+        pub fn add_player(&mut self, player: &P) -> &P{
+            self.players.push(player.clone());
+            self.players.last().unwrap()
+        }
+
+        pub fn set_players(&mut self, players: &[P]){
+            self.players = players.to_vec();
         }
 
         pub fn play(&mut self, bet: i64) -> Result<&P,Error>{
