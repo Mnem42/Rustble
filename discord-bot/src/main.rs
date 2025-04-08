@@ -20,7 +20,7 @@ impl Handler{
         Handler { players: Arc::new(Mutex::new(vec![])) }
     }
 
-    pub fn add_player(&self, x:DiscordPlayer){
+    pub async fn add_player(&self, x:DiscordPlayer){
         println!("{:?} {:?}",x, self.players);
         self.players.try_lock().unwrap().push(x);
     }
@@ -82,7 +82,7 @@ impl EventHandler for Handler {
             return;
         }
         if msg.content == "!enroll"{
-            self.add_player(DiscordPlayer::new(msg.author.id,100));
+            self.add_player(DiscordPlayer::new(msg.author.id,100)).await;
             return;
         }
         if msg.content == "!about"{
