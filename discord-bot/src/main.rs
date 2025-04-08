@@ -49,16 +49,6 @@ impl EventHandler for Handler {
     async fn message(&self, ctx: Context, msg: Message) {
         println!("{}", msg.content);
 
-        if msg.content == "!ping" {
-            if let Err(why) = msg.channel_id.say(&ctx.http, "Pong!").await {
-                println!("Error sending message: {why:?}");
-            }
-            return;
-        }
-        if msg.content == "!enroll"{
-            self.add_player(DiscordPlayer::new(msg.author.id,100));
-            return;
-        }
         if msg.content.starts_with("!play-single") {
             let bet = match msg.content.split_whitespace().skip(1).next(){
                 Some(x) => x.parse().unwrap_or(0),
@@ -69,8 +59,24 @@ impl EventHandler for Handler {
             game.add_player(self.get_discord_player(msg.author.id).await.unwrap());
             let winner = game.play(bet).unwrap();
 
+            println!(" A");
+
             self.set_player_balance(winner.get_id(), winner.get_balance()).await;
+
+            println!(" B");
             let _ = winner.send_info(&ctx,msg.channel_id).await;
+
+            println!(" C");
+            return;
+        }
+        if msg.content == "!ping" {
+            if let Err(why) = msg.channel_id.say(&ctx.http, "Pong!").await {
+                println!("Error sending message: {why:?}");
+            }
+            return;
+        }
+        if msg.content == "!enroll"{
+            self.add_player(DiscordPlayer::new(msg.author.id,100));
             return;
         }
         if msg.content == "!about"{
