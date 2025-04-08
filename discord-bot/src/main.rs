@@ -71,10 +71,10 @@ impl EventHandler for Handler {
 
             let mut game: RR<player::DiscordPlayer, SimpleRandom> = RR::new();
             game.add_player(self.get_discord_player(msg.author.id).unwrap().unwrap());
-            let _ = game.play(bet);
+            let winner = game.play(bet).unwrap();
 
-            let _ = game.get_players()[0].send_info(&ctx,msg.channel_id).await;
-            self.set_player_balance(game.get_players()[0].get_id(), game.get_players()[0].get_balance());
+            let _ = winner.send_info(&ctx,msg.channel_id).await;
+            self.set_player_balance(winner.get_id(), winner.get_balance());
         }
         else if msg.content.starts_with("!about"){
             let mut builder = MessageBuilder::new();
