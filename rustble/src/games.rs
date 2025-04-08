@@ -33,10 +33,16 @@ pub mod rr{
             if self.players.len() == 1 {
                 let barrel = self.randomiser.random_range(0, 20);
                 if barrel%2 == 0 {
-                    return Ok(self.players[0].lose(bet));
+                    return Ok({
+                        self.players[0].lose(bet);
+                        &self.players[0]
+                    });
                 }
                 else{
-                    return Ok(self.players[0].win(bet));
+                    return Ok({
+                        self.players[0].win(bet);
+                        &self.players[0]
+                    });
                 }
             }
 
@@ -47,7 +53,10 @@ pub mod rr{
                     self.players.pop().unwrap().lose(bet);
                 }
             };
-            Ok(self.players[0].win(bet))
+            return Ok({
+                self.players[0].win(bet);
+                &self.players[0]
+            });
             
         }
     }

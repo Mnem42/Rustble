@@ -1,7 +1,7 @@
 pub trait Player{
     //fn new() -> Self;
-    fn lose(&mut self, bet: i64) -> &mut Self;
-    fn win(&mut self, bet: i64) -> &mut Self;
+    fn lose(&mut self, bet: i64);
+    fn win(&mut self, bet: i64);
     fn has_lost(self) -> bool;
 }
 

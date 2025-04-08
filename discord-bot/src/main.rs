@@ -1,14 +1,30 @@
-use player::DiscordPlayer;
+use player::{Casino, DiscordPlayer};
 use rustble::games::rr::RR;
 use rustble::randomisers::SimpleRandom;
+use rustble::traits::Player;
 use serenity::all::{ApplicationId, CreateMessage, MessageBuilder, Ready};
 use serenity::async_trait;
 use serenity::model::channel::Message;
 use serenity::prelude::*;
+use std::sync::{Mutex,TryLockError};
 
 mod player;
 
-struct Handler;
+struct Handler{
+    players: Mutex<Vec<Box<dyn Player>>>
+}
+
+impl Handler{
+    pub fn add_player(&self, x:DiscordPlayer) -> Result<(), TryLockError<std::sync::MutexGuard<'_, Vec<Box<dyn Player>>>>>{
+        self.players.try_lock()?.push(Box::new(x));
+        Ok(())
+    }
+    pub fn add_casino_player(&self, x:Casino) -> Result<(), TryLockError<std::sync::MutexGuard<'_, Vec<Box<dyn Player>>>>>{
+        self.players.try_lock()?.push(Box::new(x));
+        Ok(())
+    }
+}
+
 
 #[async_trait]
 impl EventHandler for Handler {

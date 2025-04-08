@@ -2,7 +2,7 @@ use rustble::traits::Player;
 use serenity::all::{ChannelId, CreateMessage, MessageBuilder, UserId};
 use serenity::prelude::Context;
 
-#[derive(Debug, Clone, PartialEq, sqlx::FromRow)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct DiscordPlayer{
     player: Option<UserId>,
     lost: bool,
@@ -31,15 +31,13 @@ impl DiscordPlayer{
 }
 
 impl Player for DiscordPlayer{
-    fn lose(&mut self, bet: i64) -> &mut Self {
+    fn lose(&mut self, bet: i64){
         self.lost = true;
         self.balance -= bet;
-        self
     }
 
-    fn win(&mut self, bet: i64) -> &mut Self {
+    fn win(&mut self, bet: i64){
         self.balance += bet;
-        self
     }
 
     fn has_lost(self) -> bool {
@@ -54,15 +52,13 @@ pub struct Casino{
 }
 
 impl Player for Casino{
-    fn lose(&mut self, bet: i64) -> &mut Self {
+    fn lose(&mut self, bet: i64){
         self.lost = true;
         self.balance -= bet;
-        self
     }
 
-    fn win(&mut self, bet: i64) -> &mut Self {
+    fn win(&mut self, bet: i64){
         self.balance += bet;
-        self
     }
 
     fn has_lost(self) -> bool {
