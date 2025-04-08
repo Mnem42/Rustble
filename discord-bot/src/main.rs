@@ -1,27 +1,43 @@
 use player::{Casino, DiscordPlayer};
 use rustble::games::rr::RR;
 use rustble::randomisers::SimpleRandom;
-use rustble::traits::Player;
-use serenity::all::{ApplicationId, CreateMessage, MessageBuilder, Ready};
+use rustble::traits::*;
+use serenity::all::{ApplicationId, CreateMessage, Message, MessageBuilder, Ready, UserId};
 use serenity::async_trait;
-use serenity::model::channel::Message;
+use serenity::model::timestamp;
 use serenity::prelude::*;
-use std::sync::{Mutex,TryLockError};
+use std::sync::{Arc, Mutex, TryLockError};
 
 mod player;
 
+
 struct Handler{
-    players: Mutex<Vec<Box<dyn Player>>>
+    players: Arc<Mutex<Vec<Box<dyn IdPlayer>>>>
 }
 
 impl Handler{
-    pub fn add_player(&self, x:DiscordPlayer) -> Result<(), TryLockError<std::sync::MutexGuard<'_, Vec<Box<dyn Player>>>>>{
+    pub fn new() -> Self{
+        Handler { players: Arc::new(Mutex::new(vec![])) }
+    }
+
+    pub fn add_player(&self, x:DiscordPlayer) -> Result<(), TryLockError<std::sync::MutexGuard<'_, Vec<Box<dyn IdPlayer>>>>>{
         self.players.try_lock()?.push(Box::new(x));
         Ok(())
     }
-    pub fn add_casino_player(&self, x:Casino) -> Result<(), TryLockError<std::sync::MutexGuard<'_, Vec<Box<dyn Player>>>>>{
+    pub fn add_casino_player(&self, x:Casino) -> Result<(), TryLockError<std::sync::MutexGuard<'_, Vec<Box<dyn IdPlayer>>>>>{
         self.players.try_lock()?.push(Box::new(x));
         Ok(())
+    }
+
+    pub fn get_discord_player(&self, id: UserId) -> Result<Option<DiscordPlayer>,TryLockError<std::sync::MutexGuard<'_, Vec<Box<dyn IdPlayer>>>>>{
+        let tmp = self.players.lock()?;
+        let tmp = tmp.iter().find(|x| x.get_id() == id.get());
+        if let Some(x) = tmp{
+            Ok(Some(DiscordPlayer::new(UserId::new(x.get_id()),x.get_balance())))
+        }
+        else{
+            Ok(None)
+        }
     }
 }
 
@@ -38,22 +54,22 @@ impl EventHandler for Handler {
                 println!("Error sending message: {why:?}");
             }
         }
-        if msg.content.starts_with("!play-single") {
+        else if msg.content.starts_with("!enroll"){
+            self.add_player(DiscordPlayer::new(msg.author.id,100)).unwrap();
+        }
+        else if msg.content.starts_with("!play-single") {
             let bet = match msg.content.split_whitespace().skip(1).next(){
                 Some(x) => x.parse().unwrap_or(0),
                 None => 0
             };
 
             let mut game: RR<player::DiscordPlayer, SimpleRandom> = RR::new();
-            
-            let player = DiscordPlayer::new(msg.author.id);
-            game.add_player(player);
+            game.add_player(self.get_discord_player(msg.author.id).unwrap().unwrap());
             let _ = game.play(bet);
 
             let _ = game.get_players()[0].send_info(&ctx,msg.channel_id).await;
         }
-
-        if msg.content.starts_with("!about"){
+        else if msg.content.starts_with("!about"){
             let mut builder = MessageBuilder::new();
             builder.push_line("# Commands");
             builder.push_line("`!play-single` : Plays a single player game of russian roulette");
@@ -73,7 +89,7 @@ async fn main() {
         .expect("Application Id must be a valid u64");
 
     let mut client = Client::builder(&token,GatewayIntents::all())
-        .event_handler(Handler)
+        .event_handler(Handler::new())
         .application_id(ApplicationId::new(application_id))
         .await
         .expect("Error creating client");
