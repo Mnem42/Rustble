@@ -47,6 +47,8 @@ impl EventHandler for Handler {
     }
 
     async fn message(&self, ctx: Context, msg: Message) {
+        println!("{}", msg.content);
+
         if msg.content == "!ping" {
             if let Err(why) = msg.channel_id.say(&ctx.http, "Pong!").await {
                 println!("Error sending message: {why:?}");
@@ -66,7 +68,6 @@ impl EventHandler for Handler {
             let winner = game.play(bet).unwrap();
 
             self.set_player_balance(winner.get_id(), winner.get_balance()).await;
-            panic!("Good.");
             let _ = winner.send_info(&ctx,msg.channel_id).await;
         }
         else if msg.content.starts_with("!about"){
