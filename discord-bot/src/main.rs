@@ -56,7 +56,8 @@ impl EventHandler for Handler {
                 None => 0
             };
 
-            println!(" A");
+            println!("A");
+            println!("{}",msg.author.id);
             let game_player = self.get_discord_player(msg.author.id).await.unwrap();
             println!("P");
             let mut game: RR<DiscordPlayer , SimpleRandom> = RR::new();
