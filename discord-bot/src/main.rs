@@ -53,9 +53,11 @@ impl EventHandler for Handler {
             if let Err(why) = msg.channel_id.say(&ctx.http, "Pong!").await {
                 println!("Error sending message: {why:?}");
             }
+            return;
         }
         if msg.content.starts_with("!enroll"){
             self.add_player(DiscordPlayer::new(msg.author.id,100));
+            return;
         }
         if msg.content.starts_with("!play-single") {
             let bet = match msg.content.split_whitespace().skip(1).next(){
@@ -69,6 +71,7 @@ impl EventHandler for Handler {
 
             self.set_player_balance(winner.get_id(), winner.get_balance()).await;
             let _ = winner.send_info(&ctx,msg.channel_id).await;
+            return;
         }
         if msg.content.starts_with("!about"){
             let mut builder = MessageBuilder::new();
@@ -76,6 +79,7 @@ impl EventHandler for Handler {
             builder.push_line("`!play-single` : Plays a single player game of russian roulette");
             builder.push_line("`!about      ` : Shows this help");
             let _ = msg.channel_id.send_message(&ctx, CreateMessage::new().content(builder.to_string())).await;
+            return;
         }
     }
 }
