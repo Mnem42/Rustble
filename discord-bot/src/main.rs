@@ -54,7 +54,7 @@ impl EventHandler for Handler {
             }
         }
         else if msg.content.starts_with("!enroll"){
-            self.add_player(DiscordPlayer::new(msg.author.id,100));
+            self.add_player(DiscordPlayer::new(msg.author.id,100)).await;
         }
         else if msg.content.starts_with("!play-single") {
             let bet = match msg.content.split_whitespace().skip(1).next(){
