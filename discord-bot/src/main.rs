@@ -20,7 +20,7 @@ impl Handler{
         Handler { players: Arc::new(Mutex::new(vec![])) }
     }
 
-    pub fn add_player(&self, x:DiscordPlayer){
+    pub async fn add_player(&self, x:DiscordPlayer){
         self.players.try_lock().unwrap().push(x);
     }
 
